@@ -3,12 +3,15 @@ from fastapi import Depends
 from configs import Config
 from typing import Annotated
 
+# Import all models so they are registered with SQLModel.metadata
+from models import Text, Document
+
 config = Config()
 
 engine = create_engine(config.get_sync_db_url())
 
 
-def create_db_and_table():
+def init_db():
     SQLModel.metadata.create_all(engine)
 
 
@@ -18,3 +21,5 @@ def get_session():
 
 
 SessionDep = Annotated[Session, Depends(get_session)]
+
+init_db()
