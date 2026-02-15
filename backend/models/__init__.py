@@ -1,4 +1,4 @@
-from .Document import Document, DocumentType
+from .document import Document, DocumentType
 from .text import Text
 
-__all__ = ["Document", "Text", "DocumentType"]
+__all__ = ["document", "text", "DocumentType"]
