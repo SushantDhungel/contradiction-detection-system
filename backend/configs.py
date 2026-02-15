@@ -5,12 +5,12 @@ load_dotenv()
 
 class Config:
     def __init__(self) -> None:
-        self.POSTGRES_DB = os.getenv("POSTGRES_DB", "metrics_db")
-        self.POSTGRES_USER = os.getenv("POSTGRES_USER", "metrics_user")
+        self.POSTGRES_DB = os.getenv("POSTGRES_DB")
+        self.POSTGRES_USER = os.getenv("POSTGRES_USER")
         self.POSTGRES_PASSWORD = os.getenv(
-            "POSTGRES_PASSWORD", "1437eec3072599442798c23c767909b1"
+            "POSTGRES_PASSWORD"
         )
-        self.POSTGRES_PORT = os.getenv("POSTGRES_PORT", 5433)
+        self.POSTGRES_PORT = os.getenv("POSTGRES_PORT")
 
     def get_sync_db_url(self) -> str:
         try:
