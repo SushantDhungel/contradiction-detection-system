@@ -31,6 +31,24 @@ uv run fastapi deploy
 - [FastAPI Documentation](https://fastapi.tiangolo.com)
 - [FastAPI Cloud](https://fastapicloud.com)
 
+## Healthcare Self-Report vs Metrics
+
+Dataset:
+
+Heart Disease UCI Dataset
+
+On UCI Machine Learning Repository
+
+Also mirrored on Kaggle
+
+You simulate:
+
+Patient-reported symptoms (text input)
+
+Clinical features (cholesterol, BP, age)
+
+Your AI detects mismatch risk.
+
 ## Tasks
 
 ### Backend (FastAPI)
@@ -44,3 +62,4 @@ Upload CSV
 Return mismatch score
 
 Return explanation
+
