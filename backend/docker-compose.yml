@@ -24,6 +24,26 @@ services:
       - metrics:/var/lib/postgresql/data
     networks:
       - contradiction-system-network
+
+  chromadb:
+    image: chromadb/chroma:latest
+    restart: always
+    ports:
+      - "8001:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=${CHROMA_ANONYMIZED_TELEMETRY:-TRUE}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    networks:
+      - contradiction-system-network
+
   s3:
     image: minio/minio:latest
     restart: always
@@ -45,6 +65,7 @@ services:
       retries: 3
     networks:
       - contradiction-system-network
+
   s3-setup:
     image: minio/mc
     depends_on:
@@ -64,6 +85,8 @@ volumes:
   metrics:
     driver: local
   s3_data:
+    driver: local
+  chroma_data:
     driver: local
 
 networks:
