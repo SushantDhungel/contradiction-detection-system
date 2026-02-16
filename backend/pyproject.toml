@@ -4,7 +4,10 @@ version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
     "fastapi[standard]>=0.129.0",
+    "google-genai>=1.63.0",
+    "numpy>=2.4.2",
     "psycopg2-binary>=2.9.11",
+    "pytest>=9.0.2",
     "python-dotenv>=1.2.1",
     "sqlmodel>=0.0.33",
 ]

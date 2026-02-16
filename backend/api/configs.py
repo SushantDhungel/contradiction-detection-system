@@ -1,7 +1,10 @@
 from dotenv import load_dotenv
 import os
+from pathlib import Path
 
-load_dotenv()
+# Load .env from backend directory
+env_path = Path(__file__).parent.parent / ".env"
+load_dotenv(dotenv_path=env_path)
 
 
 class Config:
@@ -15,7 +18,7 @@ class Config:
         try:
             if not self.POSTGRES_DB:
                 raise ValueError("DB name not found")
-            if not self.POSTGRES_USER and self.POSTGRES_PASSWORD:
+            if not self.POSTGRES_USER or not self.POSTGRES_PASSWORD:
                 raise ValueError("User or Password fields are empty for postgres")
             if not self.POSTGRES_PORT:
                 raise ValueError("Host port is not defined")
