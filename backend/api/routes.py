@@ -3,7 +3,7 @@ from typing import Annotated
 import tempfile
 import os
 
-from .schemas import (
+from schemas import (
     VerificationResponse,
     ErrorResponse,
     HealthResponse,
@@ -12,9 +12,9 @@ from .schemas import (
     TextChunkResponse,
 )
 
-from .configs import Config
-from .database import SessionDep
-from .storage import MinioDep
+from configs import Config
+from database import SessionDep
+from storage import MinioDep
 
 # TODO:Add the Parser and Verfier
 # from data_layer.parser import DocumentParser
