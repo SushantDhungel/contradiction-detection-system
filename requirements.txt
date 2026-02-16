@@ -1,0 +1,13 @@
+# requirements.txt
+
+# Google Gemini API (includes embeddings)
+google-genai>=0.3.2
+
+# Math operations
+numpy>=1.21.0
+
+# Environment variables
+python-dotenv>=1.0.0
+
+# For testing
+pytest>=7.0.0
