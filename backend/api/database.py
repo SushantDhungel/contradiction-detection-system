@@ -4,7 +4,7 @@ from configs import Config
 from typing import Annotated
 
 # Import all models so they are registered with SQLModel.metadata
-from models import Text, Document
+from models import Document
 
 config = Config()
 
