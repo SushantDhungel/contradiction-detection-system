@@ -57,7 +57,7 @@ Endpoints:
 
 Upload text
 
-Upload CSV
+Upload jpeg,pdf
 
 Return mismatch score
 

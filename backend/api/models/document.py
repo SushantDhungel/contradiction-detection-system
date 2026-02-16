@@ -8,6 +8,7 @@ class DocumentType(str, Enum):
     TXT = "txt"
     CSV = "csv"
     XLS = "xls"
+    JPEG = "jpeg"
 
 
 class Document(SQLModel, table=True):
