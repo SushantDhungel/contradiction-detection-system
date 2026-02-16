@@ -1,3 +1,5 @@
+*.env
+*venv
 # Code editors Configs
 *.vscode
 *.idea
