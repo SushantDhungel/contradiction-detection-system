@@ -11,7 +11,7 @@ from contextlib import asynccontextmanager
 from dotenv import load_dotenv
 import os
 
-from .routes import router  # ✅ Fixed: relative import
+from app.routes import router  # ✅ Fixed: relative import
 
 # Load environment variables
 env_path = Path(__file__).parent.parent / ".env"
@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
 
     # Initialize database
     try:
-        from .database import init_db
+        from app.database import init_db
 
         init_db()
         print("✅ Database initialized")
@@ -39,7 +39,7 @@ async def lifespan(app: FastAPI):
 
     # Initialize storage
     try:
-        from .storage import init_storage
+        from app.storage import init_storage
 
         print("✅ Storage initialized")
     except Exception as e:
@@ -60,40 +60,38 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Contradiction Detection System API",
     description="""
-    **Contradiction Detection System** - AI-powered claim verification against source documents.
-    
-    ## Features
-    
-    * **Upload Documents**: PDF or TXT files
-    * **Verify Claims**: Check if statements are true, false, or partially true
-    * **Get Evidence**: Receive relevant quotes and explanations
-    * **High Accuracy**: Powered by semantic search and AI
-    
-    ## How It Works
-    
-    1. Upload a source document (PDF/TXT)
-    2. Provide a claim to verify
-    3. System extracts text and finds relevant context
-    4. AI analyzes and returns verdict with evidence
-    
-    ## Team Integration
-    
-    This API integrates three layers:
-    - **Data Layer**: Document parsing and chunking
-    - **NLP Layer**: Embeddings, search, and AI verification
-    - **API Layer**: RESTful endpoints and validation
-    
-    ## Example
-    
-    **Document**: Sales Report Q3 2025
-    
-    **Claim**: "Revenue increased by 25%"
-    
-    **Result**: PARTIALLY_TRUE - Revenue increased by 20%, not 25%
-    """,
+# Contradiction Detection System
+
+AI-powered claim verification against source documents.
+
+## Features
+- **Upload Documents:** PDF or TXT files
+- **Verify Claims:** Check if statements are true, false, or partially true
+- **Get Evidence:** Receive relevant quotes and explanations
+- **High Accuracy:** Powered by semantic search and AI
+
+## How It Works
+1. **Upload** a source document (PDF/TXT)
+2. **Provide** a claim to verify
+3. **System extracts** text and finds relevant context
+4. **AI analyzes** and returns verdict with evidence
+
+## Team Integration
+This API integrates three layers:
+- **Data Layer:** Document parsing and chunking
+- **NLP Layer:** Embeddings, search, and AI verification
+- **API Layer:** RESTful endpoints and validation
+
+## Example
+**Document:** Sales Report Q3 2025
+
+**Claim:** `Revenue increased by 25%`
+
+**Result:** `PARTIALLY_TRUE` - Revenue increased by 20%, not 25%
+""",
     version="1.0.0",
     lifespan=lifespan,
-    docs_url="/docs",  # ✅ Fixed: standard path
+    docs_url="/docs",
     redoc_url="/redoc",
 )
 

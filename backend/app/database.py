@@ -1,10 +1,10 @@
 from sqlmodel import Session, create_engine, SQLModel
 from fastapi import Depends
-from configs import Config
+from app.configs import Config
 from typing import Annotated
 
 # Import all models so they are registered with SQLModel.metadata
-from models import Document
+from app.models import Document
 
 config = Config()
 

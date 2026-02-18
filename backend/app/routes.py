@@ -10,7 +10,7 @@ from typing import Annotated
 import tempfile
 import os
 
-from .schemas import (
+from app.schemas import (
     VerificationResponse,
     ErrorResponse,
     HealthResponse,
@@ -18,21 +18,21 @@ from .schemas import (
     Verdict,
     TextChunkResponse,
 )
-from .configs import Config
-from .database import SessionDep
-from .storage import MinioDep
+from app.configs import Config
+from app.database import SessionDep
+from app.storage import MinioDep
 
-# TODO: layers when ready
-# from data_layer.parser import DocumentParser
-# from nlp_layer.verifier import ClaimVerifier
+from data_layer import DocumentParser
+from nlp_layer import ClaimVerifier
 
 router = APIRouter(prefix="/api", tags=["verification"])
 
 config = Config()
 
-# TODO: Initialize 
-# parser = DocumentParser()
-# verifier = ClaimVerifier()
+
+# Initialize parser and verifier (singleton instances)
+parser = DocumentParser()
+verifier = ClaimVerifier()
 
 
 @router.post(
@@ -46,15 +46,15 @@ config = Config()
     },
     summary="Verify a claim against a document",
     description="""
-    Upload a source document and verify a claim against it.
-    
-    **Process:**
-    1. Parse the uploaded document (PDF/TXT)
-    2. Extract and chunk text
-    3. Find relevant context using semantic search
-    4. Verify claim using AI
-    5. Return verdict with evidence
-    """,
+Upload a source document and verify a claim against it.
+
+### Process
+1. **Parse** the uploaded document (PDF/TXT)
+2. **Extract and chunk** text
+3. **Find relevant context** using semantic search
+4. **Verify claim** using AI
+5. **Return verdict** with evidence
+""",
 )
 async def verify_claim(
     file: Annotated[UploadFile, File(description="Source document (PDF or TXT)")],
@@ -65,16 +65,16 @@ async def verify_claim(
     """
     Main endpoint for claim verification.
 
-    **Parameters:**
+    ### Parameters
     - **file**: PDF or TXT document
     - **claim**: Statement to verify
 
-    **Returns:**
-    - Verdict (TRUE, FALSE, PARTIALLY_TRUE, CANNOT_DETERMINE)
-    - Explanation of the verdict
-    - Evidence quotes from document
-    - Confidence score (0-1)
-    - Relevant text chunks
+    ### Returns
+    - **verdict**: TRUE, FALSE, PARTIALLY_TRUE, or CANNOT_DETERMINE
+    - **explanation**: Explanation of the verdict
+    - **evidence**: Evidence quotes from document
+    - **confidence**: Confidence score (0-1)
+    - **relevant_chunks**: Relevant text chunks
     """
 
     # 1. Validate claim
@@ -128,47 +128,37 @@ async def verify_claim(
         temp_file.close()
 
         try:
-            # TODO: Parse document
-            # text = parser.parse(temp_file.name)
-            # chunks = parser.chunk(text)
+            # Parse document and chunk
+            chunks = parser.parse(temp_file.name)
+            if not chunks:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail=ErrorResponse(
+                        error="No text extracted",
+                        detail="The uploaded file could not be parsed or is empty.",
+                    ).model_dump(),
+                )
 
-            # TODO: Verify claim
-            # result = verifier.verify(claim, chunks)
+            # Verify claim using the NLP layer
+            result = verifier.verify(chunks, claim)
 
-            # MOCK RESPONSE (Remove when teammates finish)
-            print(f"📄 Processing: {file.filename}")
-            print(f"📏 Size: {len(file_content)} bytes")
-            print(f"🔍 Claim: {claim}")
-
+            # Build API response
             response = VerificationResponse(
-                verdict=Verdict.PARTIALLY_TRUE,
-                explanation="[MOCK] This is a placeholder. Waiting for Data Layer and NLP Layer implementation.",
-                evidence=[
-                    "[MOCK] Evidence from the document will appear here",
-                    "[MOCK] AI will analyze and provide specific quotes",
-                ],
-                confidence=0.75,
+                verdict=Verdict(result.verdict),
+                explanation=result.explanation,
+                evidence=result.evidence,
+                confidence=result.confidence,
                 relevant_chunks=[
                     TextChunkResponse(
-                        content="[MOCK] Relevant text chunk from document",
-                        chunk_index=0,
-                        page_number=1,
+                        content=chunk.content,
+                        chunk_index=chunk.chunk_index,
+                        page_number=(
+                            chunk.metadata.get("page") if chunk.metadata else None
+                        ),
                     )
+                    for chunk in result.relevant_chunks
                 ],
             )
-
-            # TODO: Replace mock with real implementation
-            # response = VerificationResponse(
-            #     verdict=Verdict(result.verdict),
-            #     explanation=result.explanation,
-            #     evidence=result.evidence,
-            #     confidence=result.confidence,
-            #     relevant_chunks=[
-            #         TextChunkResponse(**chunk.model_dump())
-            #         for chunk in result.relevant_chunks
-            #     ]
-            # )
-
             return response
 
         finally:
@@ -194,16 +184,23 @@ async def verify_claim(
     "/health",
     response_model=HealthResponse,
     summary="Health check",
-    description="Check if API and all services are running correctly",
+    description="""
+Check if API and all services are running correctly.
+
+Verifies:
+- Database connection
+- Storage (MinIO) connection
+- Configuration loaded
+""",
 )
 async def health_check():
     """
     Health check endpoint.
 
     Verifies that all services are available:
-    - Database connection
-    - Storage (MinIO) connection
-    - Configuration loaded
+    - **Database connection**
+    - **Storage (MinIO) connection**
+    - **Configuration loaded**
     """
     services = {}
 
@@ -253,7 +250,12 @@ async def health_check():
     "/supported-types",
     response_model=SupportedTypesResponse,
     summary="Get supported file types",
-    description="List of file extensions supported by the system",
+    description="""
+List of file extensions supported by the system.
+
+**Currently supported:** .pdf, .txt
+**Coming soon:** .docx, .png, .jpg, .jpeg
+""",
 )
 async def get_supported_types():
     """
