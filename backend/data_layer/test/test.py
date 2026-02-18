@@ -4,7 +4,7 @@ import os
 # Add backend folder to sys.path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..','..')))
 
-from datalayer import DocumentParser
+from data_layer import DocumentParser
 
 parser = DocumentParser(chunk_size=100, overlap=20)
 

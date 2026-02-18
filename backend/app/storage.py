@@ -2,7 +2,7 @@ from minio import Minio
 from minio.error import S3Error
 from fastapi import Depends
 from typing import Annotated
-from configs import Config
+from app.configs import Config
 
 config = Config()
 
