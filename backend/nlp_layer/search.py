@@ -7,27 +7,9 @@ find chunks whose embeddings are closest to the query.
 
 from typing import List, Tuple
 import numpy as np
-from dataclasses import dataclass
 
-
-@dataclass
-class TextChunk:
-    """
-    Represents a piece of text from a document.
-
-    Attributes:
-        content: The actual Text
-        chunk_index: Position in the original document
-        metadata: Optional extra info (Pagenumber, etc...)
-    """
-
-    content: str
-    chunk_index: int
-    metadata: dict = None
-
-    def __post_init__(self):
-        if self.metadata is None:
-            self.metadata = {}
+# Import TextChunk from data_layer to ensure consistency
+from data_layer.chunker import TextChunk
 
 
 class SemanticSearch:

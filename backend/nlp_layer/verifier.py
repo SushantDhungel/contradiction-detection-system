@@ -15,7 +15,8 @@ import json
 import re
 
 from .embeddings import EmbeddingGenerator
-from .search import SemanticSearch, TextChunk
+from .search import SemanticSearch
+from data_layer.chunker import TextChunk
 from .gemini_client import GeminiClient
 
 
