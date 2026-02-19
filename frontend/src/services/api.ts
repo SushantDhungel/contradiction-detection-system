@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE = "http://localhost:8000";
+const API_BASE = "http://localhost:8000/api";
 
 // Exported interface for TypeScript
 export interface AnalysisResult {
@@ -12,13 +12,13 @@ export interface AnalysisResult {
 }
 
 // API function to call backend
-export async function analyzeData(text: string, file: File | null) {
+export async function analyzeData(claim: string, file: File | null) {
   const formData = new FormData();
-  formData.append("text", text);
+  formData.append("claim", claim);
   if (file) formData.append("file", file);
 
   const response = await axios.post<AnalysisResult>(
-    `${API_BASE}/analyze`,
+    `${API_BASE}/verify`,
     formData,
     { headers: { "Content-Type": "multipart/form-data" } }
   );

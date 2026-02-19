@@ -6,11 +6,11 @@ export function useAnalysis() {
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<AnalysisResult | null>(null);
 
-  const submit = async (text: string, file: File | null) => {
+  const submit = async (claim: string, file: File | null) => {
     try {
       setLoading(true);
       setError(null);
-      const data = await analyzeData(text, file);
+      const data = await analyzeData(claim, file);
       setResult(data);
     } catch (err) {
       console.error(err);
