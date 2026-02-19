@@ -92,7 +92,7 @@ contradiction-detection-system/
 | Part          | Owner   | Description                              |
 | ------------- | ------- | ---------------------------------------- |
 | Frontend      | Sushant | Upload interface, results display        |
-| Data Layer    | Bnisha  | PDF/text/image parsing and preprocessing |
+| Data Layer    | Binisha  | PDF/text/image parsing and preprocessing |
 | NLP Layer     | Anam    | Claim verification using Gemini API      |
 | API/Backend   | Krishom | FastAPI endpoints and orchestration      |
 
