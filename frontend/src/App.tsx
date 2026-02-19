@@ -27,17 +27,6 @@ export default function App() {
     submit(text, file);
   };
 
-  const getRiskColor = (score: number): string => {
-    if (score >= 70) return "high";
-    if (score >= 40) return "medium";
-    return "low";
-  };
-
-  const getRiskLabel = (score: number): string => {
-    const risk = getRiskColor(score);
-    return risk.charAt(0).toUpperCase() + risk.slice(1);
-  };
-
   return (
     <div className="app-container">
       <header className="header">
@@ -47,8 +36,8 @@ export default function App() {
               <Zap size={24} />
             </div>
             <div>
-              <h1>Symptom Analysis and Risk Prediction Tool</h1>
-              <p>Advanced AI-Driven Symptom Analysis and Risk Prediction</p>
+              <h1>Contradiction Detection System</h1>
+              <p>Advanced AI-Driven Contradiction Detection and Inconsistency Analysis</p>
             </div>
           </div>
         </div>
@@ -59,15 +48,13 @@ export default function App() {
           <section className="form-section">
             <div className="form-container">
               <div className="form-header">
-                <h2>Analyze Your Symptoms & Predict Risk</h2>
-                <p>
-                  Input your symptoms or upload a PDF file for evaluation
-                </p>
+                <h2>Analyze Your Text for Contradictions</h2>
+                <p>Input your text or upload a PDF file for contradiction detection</p>
               </div>
 
               <form onSubmit={handleSubmit} className="analysis-form">
                 <div className="form-group">
-                  <label htmlFor="text-input">Input Symptoms Here</label>
+                  <label htmlFor="text-input">Enter Statements for Analysis</label>
                   <textarea
                     id="text-input"
                     value={text}
@@ -76,13 +63,7 @@ export default function App() {
                     className="textarea-input"
                     rows={6}
                   />
-                  <div className="char-count">
-                    {text.length} characters
-                  </div>
-                </div>
-
-                <div className="divider">
-                  <span>or</span>
+                  <div className="char-count">{text.length} characters</div>
                 </div>
 
                 <div className="form-group">
@@ -182,43 +163,39 @@ export default function App() {
                 <h2>Analysis Results</h2>
               </div>
 
-              <div className="metrics-grid">
-                <div className="metric-card alignment">
-                  <div className="metric-label">Alignment Score</div>
+              <div className="verdict-confidence-row">
+
+                <div className="metric-card">
+                  <div className="metric-label">Verdict</div>
                   <div className="metric-value">
-                    {result.alignment}%
+                    {result.verdict}
+                  </div>
+                </div>
+
+                <div className="metric-card">
+                  <div className="metric-label">Confidence</div>
+                  <div className="metric-value">
+                    {(result.confidence * 100).toFixed(1)}%
                   </div>
                   <div className="metric-bar">
                     <div
                       className="metric-fill"
-                      style={{ width: `${result.alignment}%` }}
+                      style={{
+                        width: `${result.confidence * 100}%`,
+                      }}
                     ></div>
                   </div>
                 </div>
 
-                <div className={`metric-card risk-${getRiskColor(result.risk_score)}`}>
-                  <div className="metric-label">Risk Score</div>
-                  <div className="metric-value">{result.risk_score}</div>
-                  <div className="metric-badge">
-                    {getRiskLabel(result.risk_score)} Risk
-                  </div>
-                </div>
+              </div>
 
-                <div className={`metric-card risk-${getRiskColor(result.severity_score)}`}>
-                  <div className="metric-label">Severity Score</div>
-                  <div className="metric-value">{result.severity_score}</div>
-                  <div className="metric-badge">
-                    {getRiskLabel(result.severity_score)} Severity
-                  </div>
-                </div>
-
-                <div className={`metric-card risk-${getRiskColor(result.contradiction_score)}`}>
-                  <div className="metric-label">Contradiction Score</div>
-                  <div className="metric-value">{result.contradiction_score}</div>
-                  <div className="metric-badge">
-                    {getRiskLabel(result.contradiction_score)} Contradiction
-                  </div>
-                </div>
+              <div className="explanation-card">
+                <h3>Evidence</h3>
+                <ul>
+                  {result.evidence.map((item, index) => (
+                    <li key={index}>{item}</li>
+                  ))}
+                </ul>
               </div>
 
               <div className="explanation-card">

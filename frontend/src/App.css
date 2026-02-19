@@ -566,3 +566,16 @@ html, body, #root {
   font-size: 14px;
   color: #555;
 }
+
+.verdict-confidence-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+  .verdict-confidence-row {
+    grid-template-columns: 1fr;
+  }
+}
