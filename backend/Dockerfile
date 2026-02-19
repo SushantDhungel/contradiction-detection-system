@@ -6,8 +6,7 @@ FROM ghcr.io/astral-sh/uv:python3.12-bookworm-slim
 RUN groupadd --system --gid 999 nonroot \
  && useradd --system --gid 999 --uid 999 --create-home nonroot
 
-# Set working directory
-WORKDIR /app
+WORKDIR /backend
 
 # Enable bytecode compilation for performance
 ENV UV_COMPILE_BYTECODE=1
@@ -18,24 +17,29 @@ ENV UV_NO_DEV=1
 # Ensure installed tools can be executed out of the box
 ENV UV_TOOL_BIN_DIR=/usr/local/bin
 
+
 # Install dependencies using lockfile for reproducibility
 RUN --mount=type=cache,target=/root/.cache/uv \
-    --mount=type=bind,source=uv.lock,target=uv.lock \
-    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
-    uv sync --locked --no-install-project
+  --mount=type=bind,source=uv.lock,target=uv.lock \
+  --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+  uv sync --locked --no-install-project
+
 
 # Copy project files (including .env for environment variables)
-COPY . /app
+COPY . /backend
+
 
 # Install the project itself (editable mode)
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --locked
+  uv sync --locked
+
+# Fix permissions so nonroot user can access the venv
+RUN chown -R nonroot:nonroot /backend/.venv
 
 # Place executables in the environment at the front of the path
-ENV PATH="/app/.venv/bin:$PATH"
+ENV PATH="/backend/.venv/bin:$PATH"
 
-# Copy .env file if present (for local development)
-COPY ../.env ./ || true
+# .env is now included by COPY . /app above
 
 # Reset the entrypoint, don't invoke `uv` directly
 ENTRYPOINT []

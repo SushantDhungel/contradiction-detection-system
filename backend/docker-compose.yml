@@ -81,17 +81,17 @@ services:
     entrypoint: >
       /bin/sh -c " /usr/bin/mc alias set myminio http://s3:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD}; /usr/bin/mc mb --ignore-existing myminio/contradiction-documents; /usr/bin/mc anonymous set download myminio/contradiction-documents; exit 0; "
   server:
-    # For development, build from local Dockerfile and mount code for live reload
+    # For development, build from local Dockerfile in backend and mount code for live reload
     build:
-      context: ./app
+      context: .
       dockerfile: Dockerfile
     image: contractdiction-system-api:dev
     container_name: contractdiction-system-api
     depends_on:
       db:
         condition: service_healthy
-      chromadb:
-        condition: service_healthy
+      # chromadb:
+      #   condition: service_healthy
       s3:
         condition: service_healthy
     env_file:
@@ -99,8 +99,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./app:/app
-      - ../.env:/app/.env
+      - ./app:/app/app
+      - ./.env:/app/.env
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8000/health" ]
       interval: 30s
@@ -109,8 +109,6 @@ services:
       start_period: 10s
     networks:
       - contradiction-system-network
-    # For production, comment out the build/volumes above and uncomment the image below:
-    # image: ghcr.io/krish-om/contractdiction-system-api:latest
 volumes:
   metrics:
     driver: local
