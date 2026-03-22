@@ -7,6 +7,7 @@ export interface AnalysisResult {
   evidence: string[];
   confidence: number;
   explanation: string;
+  risk_score: number; 
 }
 
 export async function analyzeData(claim: string, file: File | null) {
